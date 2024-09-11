@@ -45,6 +45,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+
 
 var amountInput: MutableState<String> = mutableStateOf("0")
 
@@ -70,7 +73,8 @@ fun TipTimeLayout() {
         modifier = Modifier
             .statusBarsPadding()
             .padding(horizontal = 40.dp)
-            .safeDrawingPadding(),
+            .safeDrawingPadding()
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -101,11 +105,18 @@ private fun calculateTip(amount: Double, tipPercent: Double = 15.0): String {
 
 @Composable
 fun EditNumberField(modifier: Modifier = Modifier) {
-    var amountInput = mutableStateOf("0")
+    var amountInput by remember { mutableStateOf("") }
+
+    val amount = amountInput.toDoubleOrNull() ?: 0.0
+    val tip = calculateTip(amount)
+
     TextField(
-        value = amountInput.value,
-        onValueChange = { amountInput.value = it },
-        modifier = modifier
+        value = amountInput,
+        onValueChange = { amountInput = it },
+        label = { Text(stringResource(R.string.bill_amount)) },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
     )
 }
 
